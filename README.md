@@ -10,21 +10,21 @@
 <hr>
 <h5>To test</h5>
 
- RSS Feeds:
+RSS Feeds:
 
- - are defined  
- - url defined  
- - name defined
+ - Feeds are defined  
+ - Feeds url not empty  
+ - Feeds name not empty
 
- The menu:
+The menu:
 
- - menu hidden  
- - menu clicked
+ - Menu is hidden by default  
+ - The menu display when is clicked
 
- Initial Entries:
+Initial Entries:
 
- - entry test
+ - Feed container at least one entry
 
- New Feed Selection:
+New Feed Selection:
 
- - entry changed
+ - Feed container changed
