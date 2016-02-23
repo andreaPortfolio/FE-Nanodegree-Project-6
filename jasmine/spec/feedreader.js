@@ -14,133 +14,116 @@ $(function() {
    * feeds definitions, the allFeeds variable in our application.
    */
   describe('RSS Feeds', function() {
-    /* This is our first test - it tests to make sure that the
+    /* Tests to make sure that the
      * allFeeds variable has been defined and that it is not
-     * empty. Experiment with this before you get started on
-     * the rest of this project. What happens when you change
-     * allFeeds in app.js to be an empty array and refresh the
-     * page?
+     * empty.
      */
     it('are defined', function() {
       expect(allFeeds).toBeDefined();
       expect(allFeeds.length).not.toBe(0);
     });
-
-
-    /* TODO: Write a test that loops through each feed
-     * in the allFeeds object and ensures it has a URL defined
-     * and that the URL is not empty.
-     */
-    it('url defined', function() {
-      //for loop for check all feeds url
-      for (var i = 0; i < allFeeds.length; i++) {
-        expect(allFeeds[i].url).toBeDefined();
-        expect(allFeeds[i].url).not.toBe(0);
-      }
-
-    });
-
-    /* TODO: Write a test that loops through each feed
-     * in the allFeeds object and ensures it has a name defined
-     * and that the name is not empty.
-     */
-    it('name defined', function() {
+//create function for check feed url and name
+function testInitialFeed(feed){
+  it('url defined of feed '+feed, function() {
+    //loop for check all feeds url
+      console.log(allFeeds[feed].url);
+      expect(allFeeds[feed].url).toBeDefined();
+      expect(allFeeds[feed].url).not.toBe('');
+  });
+  it('url integrity of feed '+feed, function() {
+    //check intergrity of urls
+      expect(allFeeds[feed].url).toMatch(/^http(s?)\:\/\//);
+  });
+    it('name defined of feed '+feed, function() {
       //for loop for check all feeds name
-      for (var i = 0; i < allFeeds.length; i++) {
-        expect(allFeeds[i].name).toBeDefined();
-        expect(allFeeds[i].name).not.toBe(0);
-      }
 
-    });
+        expect(allFeeds[feed].name).toBeDefined();
+        expect(allFeeds[feed].name).not.toBe('');
   });
+}
+//loop every feeds
+for (var feed = 0; feed < allFeeds.length; feed++) {
+  testInitialFeed(feed);
+}
+});
 
-
-  /* TODO: Write a new test suite named "The menu" */
   describe('The menu', function() {
-    /* TODO: Write a test that ensures the menu element is
-     * hidden by default. You'll have to analyze the HTML and
-     * the CSS to determine how we're performing the
-     * hiding/showing of the menu element.
-     */
-    it('menu hidden', function() {
+    //test that ensures the menu element is hidden by default.
 
-      expect((document.body.className === 'menu-hidden')).toBe(true);
+    var menuVisibility,
+      menuIcon;
+
+    beforeEach(function() {
+      menuVisibility = document.body.classList.contains('menu-hidden'); //check if menu-hidden class exiest
+      menuIcon = document.getElementsByClassName('menu-icon-link'); //get element by class
 
     });
 
-    /* TODO: Write a test that ensures the menu changes
-     * visibility when the menu icon is clicked. This test
-     * should have two expectations: does the menu display when
-     * clicked and does it hide when clicked again.
-     */
+    it('is hidden by default', function() {
 
-    it('menu clicked', function() {
-      var menuIcon = document.getElementsByClassName('menu-icon-link'); //get element by class
-      var count = 0; //set counter
-      var state = 'close'; // set initial state
-      menuIcon[0].addEventListener('click', function() {
-        count++;
-        //check if menu is open or not
-        if (count % 2 !== 0) {
-          state = 'open';
-        } else {
-          state = 'close';
-        }
-      });
-      expect((state === 'close')).toBe((document.body.className === 'menu-hidden'));
-      expect((state === 'open')).toBe((document.body.className !== 'menu-hidden'));
+      expect(menuVisibility).toBeTruthy();
+
+    });
+
+    //test that ensures the menu changes visibility when the menu icon is clicked
+    it('when is clicked chenge is visibility', function() {
+
+      menuIcon[0].click(); //open menu
+      expect(document.body.classList.contains('menu-hidden')).toBeFalsy();
+      menuIcon[0].click(); //close menu
+      expect(document.body.classList.contains('menu-hidden')).toBeTruthy();
 
     });
 
   });
-  /* TODO: Write a new test suite named "Initial Entries" */
+
   describe('Initial Entries', function() {
-    /* TODO: Write a test that ensures when the loadFeed
+    /*  test that ensures when the loadFeed
      * function is called and completes its work, there is at least
      * a single .entry element within the .feed container.
-     * Remember, loadFeed() is asynchronous so this test will require
-     * the use of Jasmine's beforeEach and asynchronous done() function.
      */
 
-    beforeEach(function(done) {
-      //load asynchronous feeds
-      loadFeed(0, done);
-    });
-
-    it('entry test', function() {
-      //check if entry is greater than 0
-      expect(document.getElementsByClassName('entry').length).toBeGreaterThan(0);
-
-
-    });
-
-  });
-
-  /* TODO: Write a new test suite named "New Feed Selection"
-
-      /* TODO: Write a test that ensures when a new feed is loaded
-       * by the loadFeed function that the content actually changes.
-       * Remember, loadFeed() is asynchronous.
-       */
-  describe('New Feed Selection', function() {
-    //get entry className
-    var title = document.getElementsByClassName('entry');
-    //empty title content
-    title.textContent = '';
-
-    beforeEach(function(done) {
-      //load asynchronous feeds
+     beforeEach(function(done) {
       loadFeed(0, function() {
         done();
       });
     });
-    //check if title content now is greather than 0
-    it('entry changed', function() {
-      expect(title.length > 0).toBe(true);
-    });
 
+    it('there shuold be at least a single entry element', function() {
+      //check if entry is greater than 0
+      expect(document.getElementsByClassName('entry').length).toBeGreaterThan(0);
+
+    });
 
   });
 
+      /* Test that ensures when a new feed is loaded
+       * by the loadFeed function that the content actually changes.
+       */
+  describe('New Feed Selection', function() {
+
+    var initial_title,
+        current_title;
+
+    beforeEach(function(done) {
+      setTimeout(function(){
+      loadFeed(0, function() {
+        //set content
+          initial_title = document.getElementsByClassName('entry')[0].getElementsByTagName('h2')[0];
+          loadFeed(1, function() {
+            //set content
+              current_title = document.getElementsByClassName('entry')[0].getElementsByTagName('h2')[0];
+              done();
+        });
+      });
+    },2000);
+  });
+
+    it('content actually changes', function() {
+      //check if previus content is different from current content
+      expect(initial_title !== current_title).toBe(true);
+
+    });
+  });
+
 }());
-//for loop for check all feeds name
