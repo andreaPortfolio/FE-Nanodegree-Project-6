@@ -24,16 +24,18 @@ $(function() {
     });
     //create function for check feed url and name
     function testInitialFeed(feed) {
+
       it('url defined of feed ' + feed, function() {
         //loop for check all feeds url
-        console.log(allFeeds[feed].url);
         expect(allFeeds[feed].url).toBeDefined();
         expect(allFeeds[feed].url).not.toBe('');
       });
+
       it('url integrity of feed ' + feed, function() {
         //check intergrity of urls
         expect(allFeeds[feed].url).toMatch(/^http(s?)\:\/\//);
       });
+
       it('name defined of feed ' + feed, function() {
         //for loop for check all feeds name
 
@@ -51,23 +53,18 @@ $(function() {
     //test that ensures the menu element is hidden by default.
 
     var menuVisibility,
-      menuIcon;
+        menuIcon;
 
-    beforeEach(function() {
-      menuVisibility = document.body.classList.contains('menu-hidden'); //check if menu-hidden class exiest
-      menuIcon = document.getElementsByClassName('menu-icon-link'); //get element by class
-
-    });
 
     it('is hidden by default', function() {
-
+      menuVisibility = document.body.classList.contains('menu-hidden'); //check if menu-hidden class exiest
       expect(menuVisibility).toBeTruthy();
 
     });
 
     //test that ensures the menu changes visibility when the menu icon is clicked
     it('when is clicked chenge is visibility', function() {
-
+      menuIcon = document.getElementsByClassName('menu-icon-link'); //get element by class
       menuIcon[0].click(); //open menu
       expect(document.body.classList.contains('menu-hidden')).toBeFalsy();
       menuIcon[0].click(); //close menu
@@ -102,27 +99,24 @@ $(function() {
    */
   describe('New Feed Selection', function() {
 
-    var initial_title,
-      current_title;
+    var initialTitle,
+        currentTitle;
 
     beforeEach(function(done) {
-      setTimeout(function() {
-        loadFeed(0, function() {
+      loadFeed(0, function() {
+        //set content
+        initialTitle = document.getElementsByClassName('entry')[0].getElementsByTagName('h2')[0].innerText;
+        loadFeed(1, function() {
           //set content
-          initial_title = document.getElementsByClassName('entry')[0].getElementsByTagName('h2')[0];
-          loadFeed(1, function() {
-            //set content
-            current_title = document.getElementsByClassName('entry')[0].getElementsByTagName('h2')[0];
-            done();
-          });
+          currentTitle = document.getElementsByClassName('entry')[0].getElementsByTagName('h2')[0].innerText;
+          done();
         });
-      }, 2000);
+      });
     });
 
     it('content actually changes', function() {
       //check if previus content is different from current content
-      expect(initial_title !== current_title).toBe(true);
-
+      expect(initialTitle).not.toMatch(currentTitle);
     });
   });
 
